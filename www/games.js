@@ -327,7 +327,7 @@ function initPlinko(){
   var canvas=document.getElementById("plinko-canvas");
   if(!canvas)return;
   var ctx=canvas.getContext("2d");
-  var W=600,H=500;canvas.width=W;canvas.height=H;
+  var W=680,H=567;canvas.width=W;canvas.height=H;
   var ROWS=10,BINS=ROWS+1;
   var pegSX=W/(ROWS+2),pegSY=(H-110)/(ROWS+1),pegY0=50;
   var bins=new Array(BINS).fill(0),balls=[],total=0;
@@ -337,7 +337,7 @@ function initPlinko(){
       var np=r+2,ox=(W-(np-1)*pegSX)/2;
       for(var c=0;c<np;c++){
         var px=ox+c*pegSX,py=pegY0+(r+1)*pegSY;
-        ctx.beginPath();ctx.arc(px,py,3,0,2*Math.PI);
+        ctx.beginPath();ctx.arc(px,py,3.5,0,2*Math.PI);
         ctx.fillStyle="#8a8078";ctx.fill();
       }
     }
@@ -345,13 +345,13 @@ function initPlinko(){
 
   function drawBins(){
     var mx=1;for(var i=0;i<BINS;i++)if(bins[i]>mx)mx=bins[i];
-    var bw=W/BINS,base=H-5,mh=80;
+    var bw=W/BINS,base=H-5,mh=92;
     for(var i=0;i<BINS;i++){
       var bh=bins[i]/mx*mh,bx=i*bw+2;
       ctx.fillStyle="rgba(212,100,59,0.45)";
       ctx.fillRect(bx,base-bh,bw-4,bh);
       if(bins[i]>0){
-        ctx.fillStyle="#555";ctx.font="10px DM Sans";ctx.textAlign="center";
+        ctx.fillStyle="#555";ctx.font="12px DM Sans";ctx.textAlign="center";
         ctx.fillText(bins[i],bx+(bw-4)/2,base-bh-4);
       }
     }
@@ -379,7 +379,7 @@ function initPlinko(){
     balls.forEach(function(b){
       if(b.step<b.path.length){
         var p=b.path[b.step];
-        ctx.beginPath();ctx.arc(p.x,p.y,5,0,2*Math.PI);
+        ctx.beginPath();ctx.arc(p.x,p.y,5.5,0,2*Math.PI);
         ctx.fillStyle="#d4643b";ctx.fill();
         b.step++;still.push(b);
       }

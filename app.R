@@ -220,6 +220,15 @@ css_games <- '
 #buffon-game .g-row{gap:12px;flex-wrap:wrap}
 #buffon-game .g-stat{font-size:1.08rem;padding:10px 16px}
 #buffon-game .g-info{font-size:1.12rem;padding:18px 20px;line-height:1.55;margin-top:12px}
+#plinko-game .plinko-layout{display:flex;gap:26px;max-width:1240px;margin:24px auto;padding:0 28px 44px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+#plinko-game .plinko-canvas-area{width:680px;max-width:min(680px,calc(100vw - 56px));aspect-ratio:680/567;height:auto;flex-shrink:0}
+#plinko-game .plinko-sidebar{width:340px;min-width:280px;flex:1 1 300px;display:flex;flex-direction:column;gap:16px}
+#plinko-game .g-card{padding:22px 24px}
+#plinko-game .g-card h3{font-size:1.35rem;letter-spacing:1.4px;margin-bottom:14px}
+#plinko-game .g-btn{font-size:1.2rem;padding:14px 22px;border-radius:12px}
+#plinko-game .g-row{gap:12px;flex-wrap:wrap;align-items:center}
+#plinko-game .g-stat{font-size:1.08rem;padding:10px 16px}
+#plinko-game .g-info{font-size:1.12rem;padding:18px 20px;line-height:1.55}
 #roulette-game .roul-layout{display:flex;gap:24px;max-width:1000px;margin:24px auto;padding:0 28px 44px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
 #roulette-game .roul-wheel-column{flex:0 1 auto;min-width:0;max-width:360px;width:100%}
 #roulette-game .roul-sidebar{flex:0 1 300px;width:300px;min-width:260px;max-width:320px;display:flex;flex-direction:column;gap:16px}
@@ -270,7 +279,7 @@ css_games <- '
 .bet-cell.green-num{background:#27ae60;color:#fff;border-color:#1e8449}
 .bet-cell.selected{box-shadow:0 0 0 3px var(--accent);transform:scale(1.08)}
 .bet-cell.outside{background:var(--bg);font-size:.72rem}
-@media(max-width:900px){#fourier-game .fourier-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#fourier-game .fourier-sidebar{width:100%;max-width:680px}#buffon-game .buffon-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#buffon-game .buffon-sidebar{width:100%;max-width:680px}#roulette-game .roul-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#roulette-game .roul-sidebar{width:100%;max-width:360px}#roulette-game .roul-wheel-column{max-width:360px}#roulette-game .roul-actions{flex-wrap:wrap}}
+@media(max-width:900px){#fourier-game .fourier-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#fourier-game .fourier-sidebar{width:100%;max-width:680px}#buffon-game .buffon-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#buffon-game .buffon-sidebar{width:100%;max-width:680px}#plinko-game .plinko-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#plinko-game .plinko-sidebar{width:100%;max-width:680px}#roulette-game .roul-layout{flex-direction:column;align-items:center;padding:0 20px 36px}#roulette-game .roul-sidebar{width:100%;max-width:360px}#roulette-game .roul-wheel-column{max-width:360px}#roulette-game .roul-actions{flex-wrap:wrap}}
 @media(max-width:520px){.hero-title{font-size:1.8rem}.carousel-item{width:220px}.carousel-img{height:160px}.door{width:85px;height:120px}#monty-game .door{width:92px;height:140px}#monty-game .door-content{font-size:2.5rem}#monty-game .door-row{gap:10px;margin:18px 0}}
 '
 
@@ -378,21 +387,22 @@ dating_ui <- function() {
 }
 
 plinko_ui <- function() {
-  div(id = "plinko-game", class = "g-wrap",
-      div(class = "g-card", h3("Controls"), div(class = "g-row",
-                                                tags$button(class = "g-btn g-btn-primary", onclick = "plinkoDrop(1)", "Drop 1"),
-                                                tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoDrop(10)", "Drop 10"),
-                                                tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoDrop(100)", "Drop 100"),
-                                                tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoReset()", "Reset"),
-                                                div(class = "g-stat", "Balls: ", tags$b(id = "plinko-count", "0"))
-      )),
-      div(class = "g-card", style = "padding:10px",
-          div(class = "g-canvas-wrap g-canvas-wrap-light",
-              style = "width:600px;height:500px;max-width:100%;margin:0 auto",
-              tags$canvas(id = "plinko-canvas"))
-      ),
-      div(class = "g-info",
-          HTML("<b>The math:</b> Each ball makes independent left/right choices at each peg. By the Central Limit Theorem, the sum follows a normal (bell curve) distribution. More balls = clearer bell shape!"))
+  div(id = "plinko-game",
+      div(class = "plinko-layout",
+          div(class = "g-canvas-wrap g-canvas-wrap-light plinko-canvas-area",
+              tags$canvas(id = "plinko-canvas")),
+          div(class = "plinko-sidebar",
+              div(class = "g-card", h3("Controls"), div(class = "g-row",
+                                                        tags$button(class = "g-btn g-btn-primary", onclick = "plinkoDrop(1)", "Drop 1"),
+                                                        tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoDrop(10)", "Drop 10"),
+                                                        tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoDrop(100)", "Drop 100"),
+                                                        tags$button(class = "g-btn g-btn-secondary", onclick = "plinkoReset()", "Reset"),
+                                                        div(class = "g-stat", "Balls: ", tags$b(id = "plinko-count", "0"))
+              )),
+              div(class = "g-info",
+                  HTML("<b>The math:</b> Each ball makes independent left/right choices at each peg. By the Central Limit Theorem, the sum follows a normal (bell curve) distribution. More balls = clearer bell shape!"))
+          )
+      )
   )
 }
 
