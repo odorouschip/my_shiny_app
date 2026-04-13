@@ -65,16 +65,15 @@ css_base <- '
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap");
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#faf7f2;--bg-card:#ffffff;--text:#2d2a26;--text-sub:#7a756d;--border:#e8e2d9;--accent:#d4643b;--radius:14px}
-body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}
-.container-fluid{padding:0!important}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+.container-fluid{padding:0!important;background:transparent}
 .hero{text-align:left;padding:60px 48px 18px;max-width:1200px}
-.hero-title{font-family:"DM Serif Display",serif;font-size:4.2rem;letter-spacing:-1px;margin-bottom:10px}
-.hero-sub{font-size:1.3rem;color:var(--text-sub);font-weight:300;max-width:600px;line-height:1.6}
-.hero-badge{display:inline-block;margin-top:16px;background:var(--accent);color:#fff;font-size:.92rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:7px 20px;border-radius:20px}
-.carousel-section{overflow:hidden;padding:24px 0 80px;position:relative}
-.carousel-section::before,.carousel-section::after{content:"";position:absolute;top:0;bottom:0;width:160px;z-index:2;pointer-events:none}
-.carousel-section::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
-.carousel-section::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.hero-title{font-family:"DM Serif Display",serif;font-size:5rem;letter-spacing:-1.5px;margin-bottom:12px}
+.hero-sub{font-size:1.55rem;color:var(--text-sub);font-weight:300;max-width:700px;line-height:1.6}
+.carousel-section{overflow:visible;padding:24px 0 80px;position:relative}
+.carousel-section::before,.carousel-section::after{content:"";position:absolute;width:160px;z-index:2;pointer-events:none}
+.carousel-section::before{left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.carousel-section::after{right:0;top:-140px;bottom:-60px;background:linear-gradient(270deg,var(--bg),transparent)}
 .carousel-track-wrapper{transform:rotate(-4deg);margin:0 -100px}
 .carousel-track{display:flex;gap:28px;width:max-content;padding:18px 0;animation:carousel-scroll 40s linear infinite}
 .carousel-track-offset{animation-delay:-20s;margin-left:164px}
@@ -420,8 +419,7 @@ server <- function(input, output, session) {
         div(class = "hero",
             div(class = "hero-title", "APMA Math Arcade"),
             div(class = "hero-sub",
-                "Interactive math and statistics games \u2014 pick one and play!"),
-            div(class = "hero-badge", "Open House 2026")
+                "Interactive math and statistics games \u2014 pick one and play!")
         ),
         div(class = "carousel-section",
             div(class = "carousel-track-wrapper",
