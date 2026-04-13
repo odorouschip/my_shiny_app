@@ -67,20 +67,25 @@ css_base <- '
 :root{--bg:#faf7f2;--bg-card:#ffffff;--text:#2d2a26;--text-sub:#7a756d;--border:#e8e2d9;--accent:#d4643b;--radius:14px}
 body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}
 .container-fluid{padding:0!important}
-.hero{text-align:center;padding:48px 24px 10px}
-.hero-title{font-family:"DM Serif Display",serif;font-size:2.6rem;letter-spacing:-0.5px;margin-bottom:6px}
-.hero-sub{font-size:1rem;color:var(--text-sub);font-weight:300;max-width:520px;margin:0 auto;line-height:1.5}
-.hero-badge{display:inline-block;margin-top:12px;background:var(--accent);color:#fff;font-size:.76rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 16px;border-radius:20px}
-.game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1080px;margin:30px auto 48px;padding:0 28px}
-.game-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px 20px;cursor:pointer;position:relative;overflow:hidden;transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column;min-height:200px}
-.game-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(45,42,38,.1)}
-.game-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--card-accent)}
-.card-icon{font-size:2rem;margin-bottom:8px}
-.card-tag{display:inline-block;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--card-accent);background:color-mix(in srgb,var(--card-accent) 10%,transparent);padding:2px 9px;border-radius:6px;margin-bottom:6px;width:fit-content}
-.card-title{font-family:"DM Serif Display",serif;font-size:1.1rem;margin-bottom:5px}
-.card-desc{font-size:.8rem;color:var(--text-sub);line-height:1.4;flex:1}
-.card-go{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;color:var(--card-accent);margin-top:10px;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
-.game-card:hover .card-go{opacity:1;transform:translateX(0)}
+.hero{text-align:center;padding:56px 24px 14px}
+.hero-title{font-family:"DM Serif Display",serif;font-size:3.2rem;letter-spacing:-0.5px;margin-bottom:8px}
+.hero-sub{font-size:1.25rem;color:var(--text-sub);font-weight:300;max-width:600px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;margin-top:14px;background:var(--accent);color:#fff;font-size:.92rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:7px 20px;border-radius:20px}
+.carousel-section{overflow:hidden;padding:24px 0 80px;position:relative}
+.carousel-section::before,.carousel-section::after{content:"";position:absolute;top:0;bottom:0;width:160px;z-index:2;pointer-events:none}
+.carousel-section::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.carousel-section::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.carousel-track-wrapper{transform:rotate(-4deg);margin:0 -100px}
+.carousel-track{display:flex;gap:28px;width:max-content;padding:30px 0;animation:carousel-scroll 45s linear infinite}
+.carousel-track:hover{animation-play-state:paused}
+.carousel-item{flex-shrink:0;width:300px;border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 24px rgba(0,0,0,.08);background:#fff}
+.carousel-item:hover{transform:scale(1.07);box-shadow:0 12px 40px rgba(0,0,0,.18)}
+.carousel-img{height:210px;display:flex;align-items:center;justify-content:center;font-size:5.5rem}
+.carousel-label{background:#fff;padding:20px 22px 18px}
+.carousel-label-tag{font-size:.78rem;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:5px}
+.carousel-label-title{font-family:"DM Serif Display",serif;font-size:1.4rem;color:var(--text)}
+.carousel-label-desc{font-size:.9rem;color:var(--text-sub);line-height:1.45;margin-top:5px}
+@keyframes carousel-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 '
 
 css_layout <- '
@@ -134,8 +139,7 @@ css_games <- '
 .bet-cell.green-num{background:#27ae60;color:#fff;border-color:#1e8449}
 .bet-cell.selected{box-shadow:0 0 0 3px var(--accent);transform:scale(1.08)}
 .bet-cell.outside{background:var(--bg);grid-column:span 2;font-size:.72rem}
-@media(max-width:1000px){.game-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.game-grid{grid-template-columns:1fr;max-width:360px}.hero-title{font-size:1.8rem}.door{width:85px;height:120px}}
+@media(max-width:520px){.hero-title{font-size:1.8rem}.carousel-item{width:220px}.carousel-img{height:160px;font-size:3.5rem}.door{width:85px;height:120px}}
 '
 
 # ════════════════════════════════════════════════════════════════
@@ -396,15 +400,17 @@ server <- function(input, output, session) {
   output$main_view <- renderUI({
     page <- current_page()
     if (page == "home") {
-      cards <- lapply(games, function(g) {
-        div(class = "game-card",
-            style = paste0("--card-accent:", g$color, ";"),
+      items <- lapply(games, function(g) {
+        div(class = "carousel-item",
             onclick = paste0("goToGame('", g$id, "')"),
-            div(class = "card-icon", HTML(g$icon)),
-            div(class = "card-tag", g$tag),
-            div(class = "card-title", g$title),
-            div(class = "card-desc", g$desc),
-            div(class = "card-go", HTML("Play &rarr;"))
+            div(class = "carousel-img",
+                style = paste0("background:", g$color, ";"),
+                HTML(g$icon)),
+            div(class = "carousel-label",
+                div(class = "carousel-label-tag",
+                    style = paste0("color:", g$color, ";"), g$tag),
+                div(class = "carousel-label-title", g$title),
+                div(class = "carousel-label-desc", g$desc))
         )
       })
       return(tagList(
@@ -414,7 +420,9 @@ server <- function(input, output, session) {
                 "Interactive math and statistics games \u2014 pick one and play!"),
             div(class = "hero-badge", "Open House 2026")
         ),
-        div(class = "game-grid", cards)
+        div(class = "carousel-section",
+            div(class = "carousel-track-wrapper",
+                div(class = "carousel-track", items, items)))
       ))
     }
     
