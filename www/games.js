@@ -62,8 +62,8 @@ function initMontyHall(){
     if(switched){stats.st++;if(won)stats.swin++;}
     else{stats.sw++;if(won)stats.stwin++;}
     msg.innerHTML=won
-      ?"<span style=color:#27ae60>\uD83C\uDF89 You won the car!</span>"
-      :"<span style=color:#c0392b>Goat! Car was behind door "+(carDoor+1)+"</span>";
+      ?'<span class="mh-win">\uD83C\uDF89 You won the car!</span>'
+      :'<span class="mh-lose">Goat! Car was behind door '+(carDoor+1)+"</span>";
     var sp=stats.st?((stats.swin/stats.st)*100).toFixed(0):"--";
     var stp=stats.sw?((stats.stwin/stats.sw)*100).toFixed(0):"--";
     document.getElementById("mh-stats").innerHTML=
@@ -79,11 +79,11 @@ function initFourier(){
   var canvas=document.getElementById("mainCanvas");
   if(!canvas)return;
   var ctx=canvas.getContext("2d");
-  var W=520,H=520;canvas.width=W;canvas.height=H;
+  var W=680,H=680;canvas.width=W;canvas.height=H;
   var dp=[],isD=false,mode="draw",coeffs=[];
   var nTerms=50,aSpeed=1,time=0,trace=[],af=null;
   var totS=400,sC=0,origP=[];
-  var SN=25,nearS=false;
+  var SN=33,nearS=false;
   var badge=document.querySelector(".canvas-badge");
 
   function gp(e){
@@ -124,21 +124,21 @@ function initFourier(){
     ctx.clearRect(0,0,W,H);if(dp.length<2)return;
     ctx.beginPath();ctx.moveTo(dp[0].x,dp[0].y);
     for(var i=1;i<dp.length;i++)ctx.lineTo(dp[i].x,dp[i].y);
-    ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.lineCap="round";ctx.lineJoin="round";ctx.stroke();
+    ctx.strokeStyle="#000";ctx.lineWidth=2.5;ctx.lineCap="round";ctx.lineJoin="round";ctx.stroke();
     if(isD&&dp.length>1){
       var s=dp[0];
       ctx.beginPath();ctx.arc(s.x,s.y,SN,0,2*Math.PI);
-      ctx.strokeStyle=nearS?"rgba(212,100,59,.7)":"rgba(255,255,255,.15)";
+      ctx.strokeStyle=nearS?"rgba(212,100,59,.7)":"rgba(0,0,0,.2)";
       ctx.lineWidth=nearS?2:1;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
       ctx.beginPath();ctx.arc(s.x,s.y,5,0,2*Math.PI);
-      ctx.fillStyle=nearS?"#d4643b":"rgba(255,255,255,.4)";ctx.fill();
+      ctx.fillStyle=nearS?"#d4643b":"rgba(0,0,0,.45)";ctx.fill();
     }
     if(isD&&dp.length>30)badge.textContent=nearS?"Release to close!":"Loop back to close";
   }
 
   window.loadPreset=function(shape){
     stopA();mode="draw";dp=[];trace=[];
-    var cx=W/2,cy=H/2,r=170,N=300,i,t;
+    var cx=W/2,cy=H/2,r=220,N=300,i,t;
     if(shape==="circle"){
       for(i=0;i<=N;i++){t=i/N*2*Math.PI;dp.push({x:cx+r*Math.cos(t),y:cy+r*Math.sin(t)});}
     }else if(shape==="star"){
@@ -187,7 +187,7 @@ function initFourier(){
       ctx.beginPath();
       ctx.moveTo(origP[0].x,origP[0].y);
       for(var i=1;i<origP.length;i++) ctx.lineTo(origP[i].x,origP[i].y);
-      ctx.strokeStyle="rgba(255,255,255,.12)";
+      ctx.strokeStyle="rgba(0,0,0,.12)";
       ctx.lineWidth=1.5;
       ctx.stroke();
     }
@@ -279,11 +279,11 @@ function initDating(){
     var score=cands[idx],inEx=idx<optSkip;
     var icon=inEx?"\uD83D\uDD0D":"\uD83D\uDCA1";
     document.getElementById("dat-card-area").innerHTML=
-      '<div style="text-align:center">'+
-      '<div style="font-size:3rem">'+icon+'</div>'+
-      '<div style="font-family:DM Serif Display;font-size:1.5rem">Candidate '+(idx+1)+' of '+N+'</div>'+
-      '<div style="font-size:2.2rem;font-weight:700;color:var(--accent);margin:8px 0">Score: '+score+'</div>'+
-      '<div style="font-size:.82rem;color:var(--text-sub)">Best seen so far: '+Math.round(bestSoFar)+'</div></div>';
+      '<div class="dating-cand-wrap">'+
+      '<div class="dating-cand-icon">'+icon+'</div>'+
+      '<div class="dating-cand-sub">Candidate '+(idx+1)+' of '+N+'</div>'+
+      '<div class="dating-cand-score">Score: '+score+'</div>'+
+      '<div class="dating-cand-best">Best seen so far: '+Math.round(bestSoFar)+'</div></div>';
     if(inEx){
       msg.textContent="Exploring phase (skip first "+optSkip+"). Must reject.";
       document.getElementById("dat-accept").disabled=true;
@@ -310,11 +310,11 @@ function initDating(){
     for(var i=1;i<cands.length;i++)if(cands[i]>cands[best])best=i;
     var bScore=cands[best],html;
     if(choice===-1){
-      html='<div style="color:#c0392b;font-weight:600">You rejected everyone! Best was #'+(best+1)+' (score '+bScore+').</div>';
+      html='<div class="dating-result-msg dating-result-fail">You rejected everyone! Best was #'+(best+1)+' (score '+bScore+').</div>';
     }else if(choice===best){
-      html='<div style="color:#27ae60;font-weight:600">\uD83C\uDF89 Perfect! You picked the best (score '+cands[choice]+')!</div>';
+      html='<div class="dating-result-msg dating-result-win">\uD83C\uDF89 Perfect! You picked the best (score '+cands[choice]+')!</div>';
     }else{
-      html='<div style="color:#e67e22;font-weight:600">You picked score '+cands[choice]+'. Best was #'+(best+1)+' (score '+bScore+').</div>';
+      html='<div class="dating-result-msg dating-result-mid">You picked score '+cands[choice]+'. Best was #'+(best+1)+' (score '+bScore+').</div>';
     }
     html+='<div class="g-info"><b>Optimal stopping theory:</b> Reject the first N/e \u2248 '+optSkip+' candidates, then pick the next one better than all previous. This gives ~37% chance of finding the absolute best!</div>';
     document.getElementById("dat-result").innerHTML=html;
@@ -338,7 +338,7 @@ function initPlinko(){
       for(var c=0;c<np;c++){
         var px=ox+c*pegSX,py=pegY0+(r+1)*pegSY;
         ctx.beginPath();ctx.arc(px,py,3,0,2*Math.PI);
-        ctx.fillStyle="#aaa";ctx.fill();
+        ctx.fillStyle="#8a8078";ctx.fill();
       }
     }
   }
@@ -401,18 +401,18 @@ function initBuffon(){
   var canvas=document.getElementById("buffon-canvas");
   if(!canvas)return;
   var ctx=canvas.getContext("2d");
-  var W=600,H=400;canvas.width=W;canvas.height=H;
-  var D=60,L=40;
+  var W=680,H=454;canvas.width=W;canvas.height=H;
+  var D=60*(W/600),L=40*(W/600);
   var needles=[],hits=0,total=0;
 
   function drawLines(){
-    ctx.strokeStyle="#bbb";ctx.lineWidth=1;
+    ctx.strokeStyle="#c9bfb4";ctx.lineWidth=1;
     for(var y=D;y<H;y+=D){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   }
   function drawN(){
     needles.forEach(function(n){
       ctx.beginPath();ctx.moveTo(n.x1,n.y1);ctx.lineTo(n.x2,n.y2);
-      ctx.strokeStyle=n.hit?"#e74c3c":"rgba(120,120,120,0.4)";
+      ctx.strokeStyle=n.hit?"#e74c3c":"rgba(110,98,88,0.55)";
       ctx.lineWidth=n.hit?2:1.2;ctx.stroke();
     });
   }
@@ -511,14 +511,14 @@ function initPoker(){
   function upS(){
     var order=["Royal Flush","Straight Flush","Four of a Kind","Full House","Flush","Straight","Three of a Kind","Two Pair","One Pair","High Card"];
     var theo=[0.000154,0.00139,0.0240,0.1441,0.1965,0.3925,2.1128,4.7539,42.2569,50.1177];
-    var html='<table style="width:100%;font-size:.8rem;border-collapse:collapse">';
-    html+='<tr><th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Hand</th><th style="padding:4px;border-bottom:1px solid var(--border)">Count</th><th style="padding:4px;border-bottom:1px solid var(--border)">Your %</th><th style="padding:4px;border-bottom:1px solid var(--border)">True %</th></tr>';
+    var html='<table class="poker-stats-table">';
+    html+='<tr><th style="text-align:left;border-bottom:1px solid var(--border)">Hand</th><th style="border-bottom:1px solid var(--border)">Count</th><th style="border-bottom:1px solid var(--border)">Your %</th><th style="border-bottom:1px solid var(--border)">True %</th></tr>';
     order.forEach(function(h,i){
       var c=stats[h]||0;
       var pct=totalH?(c/totalH*100).toFixed(2):"0.00";
-      html+='<tr><td style="padding:3px 4px">'+h+'</td><td style="text-align:center">'+c+'</td><td style="text-align:center;font-family:JetBrains Mono,monospace">'+pct+'%</td><td style="text-align:center;color:var(--text-sub);font-family:JetBrains Mono,monospace">'+theo[i].toFixed(2)+'%</td></tr>';
+      html+='<tr><td>'+h+'</td><td style="text-align:center">'+c+'</td><td style="text-align:center;font-family:JetBrains Mono,monospace">'+pct+'%</td><td style="text-align:center;color:var(--text-sub);font-family:JetBrains Mono,monospace">'+theo[i].toFixed(2)+'%</td></tr>';
     });
-    html+='</table><div style="text-align:center;margin-top:6px;font-size:.78rem;color:var(--text-sub)">Total: '+totalH+' hands</div>';
+    html+='</table><div class="poker-stats-total">Total: '+totalH+' hands</div>';
     document.getElementById("poker-stats").innerHTML=html;
   }
   upS();
@@ -546,9 +546,9 @@ function initBlackjack(){
   function render(){
     var hD=phase==="player";
     document.getElementById("bj-dealer").innerHTML=
-      '<div style="font-size:.78rem;color:var(--text-sub);margin-bottom:4px">Dealer'+(hD?" (???)":(" ("+ht(dH)+")"))+'</div><div class="card-row">'+dH.map(function(c,i){return cH(c,hD&&i===1);}).join("")+'</div>';
+      '<div class="bj-hand-label">Dealer'+(hD?" (???)":(" ("+ht(dH)+")"))+'</div><div class="card-row">'+dH.map(function(c,i){return cH(c,hD&&i===1);}).join("")+'</div>';
     document.getElementById("bj-player").innerHTML=
-      '<div style="font-size:.78rem;color:var(--text-sub);margin-bottom:4px">You ('+ht(pH)+')</div><div class="card-row">'+pH.map(function(c){return cH(c,false);}).join("")+'</div>';
+      '<div class="bj-hand-label">You ('+ht(pH)+')</div><div class="card-row">'+pH.map(function(c){return cH(c,false);}).join("")+'</div>';
     document.getElementById("bj-chips").textContent=chips;
   }
 
@@ -625,7 +625,8 @@ function initRoulette(){
   var canvas=document.getElementById("roul-canvas");
   if(!canvas)return;
   var ctx=canvas.getContext("2d");
-  canvas.width=320;canvas.height=320;
+  var SZ=320;
+  canvas.width=SZ;canvas.height=SZ;
   var CX=160,CY=160,R=140;
   var nums=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
   var reds=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
@@ -638,7 +639,7 @@ function initRoulette(){
   }
 
   function drawW(){
-    ctx.clearRect(0,0,320,320);
+    ctx.clearRect(0,0,SZ,SZ);
     var sa=2*Math.PI/nums.length;
     nums.forEach(function(n,i){
       var a1=angle+i*sa,a2=a1+sa;
@@ -670,8 +671,8 @@ function initRoulette(){
       var res=getRes();
       var col=res===0?"green":(reds.indexOf(res)>=0?"red":"black");
       document.getElementById("roul-result").innerHTML=
-        '<span style="color:'+nc(res)+';font-size:1.8rem;font-weight:700">'+res+'</span> '+
-        '<span style="font-size:.9rem;color:var(--text-sub)">'+col+'</span>';
+        '<span class="roul-res-num" style="color:'+nc(res)+'">'+res+'</span> '+
+        '<span class="roul-res-col">'+col+'</span>';
       resolveBet(res);
       document.getElementById("roul-spin").disabled=false;
     }
